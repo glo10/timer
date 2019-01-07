@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Timer</title>
+  </head>
+  <body>
+    <div class="content">
+      <p id="timerCount" data-timer="2019-01-07-20-26-00"></p>
+    </div>
+    <script type="text/javascript">
+      const showTimer = document.getElementById('timerCount');
+      let dataTimer = document.getElementById('timerCount').dataset.timer;
+      const config = {
+        days : 86400,//24*60*60
+        millesec : 1000,
+        hours : 3600,//60*60
+        minutes : 60,
+        seconds : 60
+      };
+
+      launchTimer();
+      /**
+      *@desc Launch timerCount
+      */
+      function launchTimer(){
+        //Month 0-11 Date object
+        let newDate = new Date();
+        let dateElements = dataTimer.split('-');
+        let myFutureDatetime = {
+          year : dateElements[0],
+          month : dateElements[1]-1,
+          day : dateElements[2],
+          hour : dateElements[3],
+          min : dateElements[4],
+          sec : dateElements[5]
+        };
+
+        let futureDatetime = new Date(
+                                        myFutureDatetime.year,
+                                        myFutureDatetime.month,
+                                        myFutureDatetime.day,
+                                        myFutureDatetime.hour,
+                                        myFutureDatetime.min,
+                                        myFutureDatetime.sec
+                                      );
+
+        let secDiffTotal = ((futureDatetime.getTime() - newDate.getTime())/config.millesec) - newDate.getTimezoneOffset() * config.seconds;
+        // get Days
+        let dayDiff = Math.floor(secDiffTotal/(config.days));
+        secDiffTotal -= dayDiff*config.days;
+
+        //get Hours
+        let hoursDiff = Math.floor(secDiffTotal/(config.hours));
+        secDiffTotal -= hoursDiff*config.hours;
+
+        //get minutes
+        let minDiff = Math.floor(secDiffTotal/(config.minutes));
+        secDiffTotal -= minDiff*config.minutes;
+
+        //get Seconds
+        let secDiff = Math.floor(secDiffTotal);
+
+        let timer = {
+          day : dayDiff,
+          hour : hoursDiff,
+          min : minDiff,
+          sec : secDiff
+        };
+
+        showTimer.innerHTML = timer.day + ' jour(s) ' + timer.hour + ' heure(s) ' + timer.min + ' min ' + timer.sec + ' sec(s) ';
+        let interval = setTimeout(launchTimer,1000);
+        if(timer.day == 0 && timer.hour == 0 && timer.hour == 0 && timer.sec == 0){
+          clearTimeout(interval);
+          showTimer.innerHTML = 'Temps écoulé';
+        }
+      }
+    </script>
+  </body>
+
+</html>
